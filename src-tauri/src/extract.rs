@@ -20,14 +20,16 @@ pub fn extract_zip(
 
     for i in 0..archive.len() {
         let mut zip_file = archive.by_index(i)?;
-        let mut outpath = dest_dir.join(zip_file.mangled_name());
+        let mut zip_path = zip_file.mangled_name();
 
         if skip_top_folder {
-            let components: Vec<_> = outpath.components().collect();
+            let components: Vec<_> = zip_path.components().collect();
             if components.len() > 1 {
-                outpath = components[1..].iter().collect();
+                zip_path = components[1..].iter().collect();
             }
         }
+
+        let mut outpath = dest_dir.join(zip_path);
 
         if zip_file.name().ends_with('/') {
             fs::create_dir_all(&outpath)?;
