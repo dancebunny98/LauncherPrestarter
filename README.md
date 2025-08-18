@@ -1,13 +1,18 @@
-# Tauri + SvelteKit + TypeScript
+# Prestarter Module 5.7.x
 
-This template should help get you started developing with Tauri, SvelteKit and TypeScript in Vite.
+### Сборка модуля на Windows
 
-## Recommended IDE Setup
+- Перейдите в каталог `Prestarter_module`
+- Откройте терминал в папке в которую мы зашли ранее
+- Запустите сборку командой `gradlew.bat build`
+- Собранный файл вы найдете в `build\libs`
 
-[VS Code](https://code.visualstudio.com/) + [Svelte](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer).
+### Сборка модуля на Linux
+
+- Перейдите в каталог `Prestarter_module`
+- Запустите сборку командой `./gradlew build`
+- Собранный файл вы найдете в `build\libs`
 
 ### Установка на LaunchServer
-Для использования Prestarter выполните следующие действия:
+
 - Установите модуль `Prestarter_module.jar` на лаунчсервер в папку `modules`
-- Соберите проект с помощью Cargo/yarn
-- Поместите собранный файл в корень лаунчсервера с названием `Prestarter.exe`
