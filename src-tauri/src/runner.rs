@@ -4,7 +4,7 @@ use std::{env, path::PathBuf, process::Command};
 pub fn java_executable_file(java_dir: &PathBuf) -> PathBuf {
 
     #[cfg(target_family = "windows")]
-    let java_exe = java_dir.join("bin/java.exe");
+    let java_exe = java_dir.join("bin/javaw.exe");
 
     #[cfg(target_family = "unix")]
     let java_exe = java_dir.join("bin/java");

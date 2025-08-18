@@ -94,7 +94,7 @@ fn start_download(app_handle: tauri::AppHandle) -> Result<(), String> {
         }
 
         let handle = arc_handle.clone();
-        if let Err(e) = extract_zip(&zip_path, &jdk_dir, &emit_extract) {
+        if let Err(e) = extract_zip(&zip_path, &jdk_dir, &emit_extract, true) {
             let _ = handle.emit("error", e.to_string());
             return;
         }
