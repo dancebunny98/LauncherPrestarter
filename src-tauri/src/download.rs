@@ -20,7 +20,7 @@ pub struct JavaRelease {
 #[allow(non_snake_case)]
 #[derive(Debug, Deserialize)]
 struct GitHubTagInfo {
-    tag: String
+    // tag: String
 }
 
 pub fn fetch_latest_release() -> Result<JavaRelease> {

@@ -12,9 +12,9 @@
   "app": {
     "windows": [
       {
-        "title": "prestarter",
+        "title": "GravitLauncher Prestarter",
         "width": 512,
-        "height": 299,
+        "height": 300,
         "decorations": false,
         "shadow": false,
         "resizable": false,

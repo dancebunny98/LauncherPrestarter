@@ -1,0 +1,34 @@
+@forward "colors";
+
+@font-face {
+    font-family: 'Open Sans';
+    font-style: normal;
+    font-weight: 100 900;
+    font-stretch: 100%;
+    font-display: swap;
+    src: url('$lib/assets/fonts/OpenSans-VariableFont.ttf');
+}
+
+:root {
+    background-image: url('$lib/assets/images/bg.svg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    --max-window-width: 32rem;
+    --max-window-height: 18.75rem;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    max-width: var(--max-window-width);
+    max-height: var(--max-window-height);
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Open-Sans";
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}

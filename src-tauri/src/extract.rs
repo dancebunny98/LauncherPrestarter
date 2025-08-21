@@ -29,7 +29,7 @@ pub fn extract_zip(
             }
         }
 
-        let mut outpath = dest_dir.join(zip_path);
+        let outpath = dest_dir.join(zip_path);
 
         if zip_file.name().ends_with('/') {
             fs::create_dir_all(&outpath)?;
