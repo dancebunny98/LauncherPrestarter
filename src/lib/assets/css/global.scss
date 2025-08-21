@@ -13,15 +13,11 @@
     background-image: url('$lib/assets/images/bg.svg');
     background-size: cover;
     background-repeat: no-repeat;
-    --max-window-width: 32rem;
-    --max-window-height: 18.75rem;
 }
 
 * {
     margin: 0;
     padding: 0;
-    max-width: var(--max-window-width);
-    max-height: var(--max-window-height);
     box-sizing: border-box;
 }
 

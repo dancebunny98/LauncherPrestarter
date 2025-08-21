@@ -106,7 +106,7 @@
 
     onMount(() => {
         setupListeners();
-        setTimeout(startDownload, appConfig.download.initialDelay);
+        //setTimeout(startDownload, appConfig.download.initialDelay);
     });
 </script>
 
