@@ -28,7 +28,7 @@ pub fn fetch_latest_release() -> Result<JavaRelease> {
 }
 
 fn fetch_latest_release_from_api() -> Result<JavaRelease> {
-    let url = "https://api.bell-sw.com/v1/liberica/releases?version-modifier=latest&version-feature=24&bitness=64&os=windows&arch=x86&package-type=zip&bundle-type=jre-full";
+    let url = "https://api.bell-sw.com/v1/liberica/releases?version-modifier=latest&version-feature=25&bitness=64&os=windows&arch=x86&package-type=zip&bundle-type=jre-full";
     let resp = reqwest::blocking::get(url)?.error_for_status()?;
     let releases: Vec<JavaRelease> = serde_json::from_reader(resp)?;
 
@@ -36,8 +36,8 @@ fn fetch_latest_release_from_api() -> Result<JavaRelease> {
 }
 
 fn fetch_emergency_release() -> JavaRelease {
-    JavaRelease { downloadUrl: "https://github.com/bell-sw/Liberica/releases/download/24.0.1+11/bellsoft-jre24.0.1+11-windows-amd64-full.zip".to_owned(),
-    featureVersion: 24, version: "24.0.1+11".to_owned(), filename: "bellsoft-jre24.0.1+11-windows-amd64-full.zip".to_owned(), size: 115975373 }
+    JavaRelease { downloadUrl: "https://github.com/bell-sw/Liberica/releases/download/25+37/bellsoft-jre25+37-windows-amd64-full.zip".to_owned(),
+    featureVersion: 25, version: "25+37".to_owned(), filename: "bellsoft-jre25+37-windows-amd64-full.zip".to_owned(), size: 117540219 }
 }
 
 pub type ProgressCallback = dyn Fn(u64, u64);
