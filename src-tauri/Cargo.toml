@@ -28,6 +28,8 @@ thiserror = "2.0"
 zip = "5.1"
 dirs-next = "2.0"
 chrono = { version = "0.4.41", features = ["serde"] }
+flate2 = "1.1.2"
+tar = "0.4.44"
 
 [patch.crates-io]
 tao = { git = "https://github.com/GravitLauncher6/tao.git", branch = "dev" }

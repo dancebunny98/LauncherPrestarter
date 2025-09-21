@@ -17,9 +17,7 @@ use std::{
 use tauri::Emitter;
 
 use crate::{
-    config::{is_java_outdated, load_version_info, target_dir},
-    download::fetch_latest_release,
-    runner::relaunch_using_java,
+    config::{is_java_outdated, load_version_info, target_dir}, download::fetch_latest_release, extract::extract_tar_gz, runner::relaunch_using_java
 };
 
 #[tauri::command]
@@ -94,10 +92,18 @@ fn start_download(app_handle: tauri::AppHandle) -> Result<(), String> {
         }
 
         let handle = arc_handle.clone();
-        if let Err(e) = extract_zip(&zip_path, &jdk_dir, &emit_extract, true) {
-            let _ = handle.emit("error", e.to_string());
-            return;
+        if release.packageType == "tar.gz" {
+            if let Err(e) = extract_tar_gz(&zip_path, &jdk_dir, &emit_extract, true) {
+                let _ = handle.emit("error", e.to_string());
+                return;
+            }
+        } else {
+            if let Err(e) = extract_zip(&zip_path, &jdk_dir, &emit_extract, true) {
+                let _ = handle.emit("error", e.to_string());
+                return;
+            }
         }
+        
 
         // Save extracted mark
         {
