@@ -41,10 +41,34 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/rust/5.7.x'
-    
+    permissions:
+      contents: write  # обязательно для создания релизов и тегов
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # нужно для работы с тегами и логом
+
+      - name: Get short commit SHA
+        id: get_commit
+        run: echo "commit_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Generate changelog
+        id: changelog
+        run: |
+          if git fetch --tags --quiet 2>/dev/null && \
+             latest_tag=$(git describe --tags --abbrev=0 2>/dev/null); then
+            echo "from_tag=$latest_tag" >> $GITHUB_OUTPUT
+            echo "changelog<<EOF" >> $GITHUB_OUTPUT
+            git log "$latest_tag..HEAD" --oneline --no-merges >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+          else
+            echo "from_tag=beginning" >> $GITHUB_OUTPUT
+            echo "changelog<<EOF" >> $GITHUB_OUTPUT
+            git log --oneline --no-merges >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+          fi
 
       - name: Download artifacts
         uses: actions/download-artifact@v4
@@ -54,10 +78,18 @@ jobs:
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
-        with:
-          files: ./artifacts/*.exe
-          generate_release_notes: true
-          draft: false
-          prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: "build-${{ steps.get_commit.outputs.commit_short }}"
+          name: "Auto-build ${{ steps.get_commit.outputs.commit_short }}"
+          body: |
+            Automatic build from branch `rust/5.7.x` at commit `${{ steps.get_commit.outputs.commit_short }}`.
+
+            **Changes since ${{ steps.changelog.outputs.from_tag }}:**
+            ```
+            ${{ steps.changelog.outputs.changelog }}
+            ```
+          draft: false
+          prerelease: true
+          files: ./artifacts/*.exe
