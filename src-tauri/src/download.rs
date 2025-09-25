@@ -112,7 +112,7 @@ pub fn fetch_latest_release() -> Result<JavaRelease> {
 }
 
 fn fetch_latest_release_from_api() -> Result<JavaRelease> {
-    let url = format!("https://api.adoptium.net/v3/assets/latest/25/hotspot?os={}&architecture={}&image_type=jre&vendor=eclipse",
+    let url = format!("https://api.adoptium.net/v3/assets/latest/25/hotspot?os={}&architecture={}&image_type=jdk&vendor=eclipse",
         get_platform_name(), get_arch_name_v2());
     let resp = reqwest::blocking::get(url)?.error_for_status()?;
     let releases: Vec<AdoptiumResponse> = serde_json::from_reader(resp)?;
@@ -132,12 +132,12 @@ fn fetch_latest_release_from_api() -> Result<JavaRelease> {
 
 fn fetch_emergency_release() -> JavaRelease {
     JavaRelease { 
-        downloadUrl: format!("https://github.com/adoptium/temurin25-binaries/releases/download/jdk-25%2B36/OpenJDK25U-jre_{}_{}_hotspot_25_36.{}", 
+        downloadUrl: format!("https://github.com/adoptium/temurin25-binaries/releases/download/jdk-25%2B36/OpenJDK25U-jdk_{}_{}_hotspot_25_36.{}", 
             get_arch_name_for_adoptium(), get_platform_name(), get_package_type()),
         packageType: get_package_type().to_owned(),
         featureVersion: 25, 
         version: "jdk-25+36".to_owned(), 
-        filename: format!("OpenJDK25U-jre_{}_{}_hotspot_25_36.{}", get_arch_name_for_adoptium(), get_platform_name(), get_package_type()), 
+        filename: format!("OpenJDK25U-jdk_{}_{}_hotspot_25_36.{}", get_arch_name_for_adoptium(), get_platform_name(), get_package_type()), 
         size: 58401507 
     }
 }
