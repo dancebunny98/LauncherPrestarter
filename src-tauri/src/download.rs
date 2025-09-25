@@ -6,7 +6,7 @@ use std::{
     path::PathBuf,
 };
 
-// BellSoft API
+// Adoptium API
 #[allow(non_snake_case)]
 #[derive(Debug, Deserialize)]
 pub struct JavaRelease {
@@ -16,6 +16,41 @@ pub struct JavaRelease {
     pub(crate) version: String,
     pub(crate) filename: String,
     pub(crate) size: u64,
+}
+
+#[allow(non_snake_case)]
+#[derive(Debug, Deserialize)]
+struct AdoptiumResponse {
+    binary: AdoptiumBinary,
+    release_name: String,
+    vendor: String,
+    version: AdoptiumVersion,
+}
+
+#[allow(non_snake_case)]
+#[derive(Debug, Deserialize)]
+struct AdoptiumBinary {
+    architecture: String,
+    os: String,
+    package: AdoptiumPackage,
+    jvm_impl: String,
+    image_type: String,
+}
+
+#[allow(non_snake_case)]
+#[derive(Debug, Deserialize)]
+struct AdoptiumPackage {
+    link: String,
+    name: String,
+    size: u64,
+}
+
+#[allow(non_snake_case)]
+#[derive(Debug, Deserialize)]
+struct AdoptiumVersion {
+    major: u32,
+    build: u32,
+    openjdk_version: String,
 }
 
 #[allow(non_snake_case)]
@@ -63,25 +98,48 @@ pub fn get_arch_name_v2() -> &'static str {
     return "aarch64";
 }
 
+pub fn get_arch_name_for_adoptium() -> &'static str {
+
+    #[cfg(target_arch = "x86_64")]
+    return "x64";
+
+    #[cfg(target_arch = "aarch64")]
+    return "aarch64";
+}
+
 pub fn fetch_latest_release() -> Result<JavaRelease> {
     fetch_latest_release_from_api().or_else(|_| Ok(fetch_emergency_release()))
 }
 
 fn fetch_latest_release_from_api() -> Result<JavaRelease> {
-    let url = format!("https://api.bell-sw.com/v1/liberica/releases?version-modifier=latest&version-feature=25&bitness=64&os={}&arch={}&package-type={}&bundle-type=jre-full",
-        get_platform_name(), get_arch_name(), get_package_type());
+    let url = format!("https://api.adoptium.net/v3/assets/latest/25/hotspot?os={}&architecture={}&image_type=jre&vendor=eclipse",
+        get_platform_name(), get_arch_name_v2());
     let resp = reqwest::blocking::get(url)?.error_for_status()?;
-    let releases: Vec<JavaRelease> = serde_json::from_reader(resp)?;
+    let releases: Vec<AdoptiumResponse> = serde_json::from_reader(resp)?;
 
-    releases.into_iter().next().ok_or_else(|| anyhow!("No releases found"))
+    let release = releases.into_iter().next().ok_or_else(|| anyhow!("No releases found"))?;
+    
+    // Convert Adoptium response to JavaRelease format
+    Ok(JavaRelease {
+        downloadUrl: release.binary.package.link,
+        featureVersion: release.version.major,
+        packageType: get_package_type().to_owned(),
+        version: release.release_name,
+        filename: release.binary.package.name,
+        size: release.binary.package.size,
+    })
 }
 
 fn fetch_emergency_release() -> JavaRelease {
-    JavaRelease { downloadUrl: format!("https://github.com/bell-sw/Liberica/releases/download/25+37/bellsoft-jre25+37-{}-{}-full.{}", get_platform_name(),
-    get_arch_name_v2(),
-    get_package_type()),
-    packageType: get_package_type().to_owned(),
-    featureVersion: 25, version: "25+37".to_owned(), filename: format!("bellsoft-jre25+37-{}-{}-full.{}", get_platform_name(), get_arch_name_v2(), get_package_type()), size: 117540219 }
+    JavaRelease { 
+        downloadUrl: format!("https://github.com/adoptium/temurin25-binaries/releases/download/jdk-25%2B36/OpenJDK25U-jre_{}_{}_hotspot_25_36.{}", 
+            get_arch_name_for_adoptium(), get_platform_name(), get_package_type()),
+        packageType: get_package_type().to_owned(),
+        featureVersion: 25, 
+        version: "jdk-25+36".to_owned(), 
+        filename: format!("OpenJDK25U-jre_{}_{}_hotspot_25_36.{}", get_arch_name_for_adoptium(), get_platform_name(), get_package_type()), 
+        size: 58401507 
+    }
 }
 
 pub type ProgressCallback = dyn Fn(u64, u64);
