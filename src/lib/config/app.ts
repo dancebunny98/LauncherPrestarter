@@ -1,5 +1,5 @@
 export const appConfig = {
-    name: "QuickFire",
+    name: "GravitLauncher Prestarter",
     version: "1.0.0",
     download: {
         speedSamples: 30,

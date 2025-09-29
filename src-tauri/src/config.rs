@@ -44,7 +44,7 @@ pub fn get_appdata_dir() -> Result<PathBuf> {
 }
 
 pub fn target_dir() -> Result<PathBuf> {
-    Ok(get_appdata_dir()?.join("QuickFire"))
+    Ok(get_appdata_dir()?.join("GravitLauncherStore"))
 }
 
 fn config_path() -> Result<PathBuf> {
