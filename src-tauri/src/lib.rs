@@ -43,14 +43,8 @@ fn start_download(app_handle: tauri::AppHandle) -> Result<(), String> {
             let _ = handle.emit("extract-progress", ExtractEvent { processed, total });
         };
 
-        let handle = arc_handle.clone();
-        let release = match fetch_latest_release() {
-            Ok(e) => e,
-            Err(e) => {
-                let _ = handle.emit("error", e.to_string());
-                return;
-            }
-        };
+        let release = fetch_latest_release();
+        
         let handle = arc_handle.clone();
         let appdata_dir = match target_dir() {
             Ok(e) => e,
