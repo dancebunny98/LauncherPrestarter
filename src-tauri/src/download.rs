@@ -40,6 +40,21 @@ pub fn get_arch_name() -> &'static str {
     return "aarch64";
 }
 
+pub fn get_file_size() -> u64 {
+    #[cfg(all(target_os = "linux", target_arch = "aarch64"))]
+    return 137580532;
+    #[cfg(all(target_os = "linux", target_arch = "x86_64"))]
+    return 140085493;
+    #[cfg(all(target_os = "macos", target_arch = "aarch64"))]
+    return 120056376;
+    #[cfg(all(target_os = "macos", target_arch = "x86_64"))]
+    return 124832259;
+    #[cfg(all(target_os = "windows", target_arch = "aarch64"))]
+    return 48584493;
+    #[cfg(all(target_os = "windows", target_arch = "x86_64"))]
+    return 117540219;
+}
+
 pub fn fetch_latest_release() -> JavaRelease {
     let filename = format!(
         "bellsoft-jre25+37-{}-{}-full.{}", 
@@ -54,7 +69,7 @@ pub fn fetch_latest_release() -> JavaRelease {
         featureVersion: 25, 
         version: "25+37".to_owned(), 
         filename: filename, 
-        size: 117540219 
+        size: get_file_size()
     }
 }
 
